@@ -404,45 +404,43 @@
     <div class="password-overlay" id="password-overlay">
         <div class="password-container">
             <div class="lock-icon">🔒</div>
-            <h2>Access Required</h2>
-            <p style="color: #666; margin-bottom: 2rem;">Enter password to view the Mallorca Shops Map</p>
-            <input type="password" class="password-input" id="password-input" placeholder="Enter password" />
-            <button class="password-submit" id="password-submit">Access Map</button>
-            <div class="password-error" id="password-error">Incorrect password. Please try again.</div>
+            <h2>Acceso Requerido</h2>
+            <p style="color: #666; margin-bottom: 2rem;">Introduce la contraseña para ver el mapa</p>
+            <input type="password" class="password-input" id="password-input" placeholder="Introducir contraseña" />
+            <button class="password-submit" id="password-submit">Acceder al Mapa</button>
+            <div class="password-error" id="password-error">Contraseña incorrecta. Inténtalo de nuevo.</div>
         </div>
     </div>
 
     <!-- Main Content (Hidden until authenticated) -->
     <div class="main-content" id="main-content">
     <div class="header">
-        <h1>🏪 Mallorca Shops Map</h1>
-        <p>Interactive map displaying shop locations and contact status</p>
+        <h1>🏪 Negocios de Mallorca</h1>
+        <p>Mapa interactivo con datos y estados de los negocios</p>
     </div>
 
     <div class="container">
         <div class="sidebar">
-            <div class="endpoint-input">
-                <label for="endpoint-url">Data Endpoint URL:</label>
-                <input type="url" id="endpoint-url" placeholder="https://api.example.com/shops" />
-                <button class="load-btn" id="load-data-btn">Load Shop Data</button>
-            </div>
-
             <div class="stats">
-                <h3>📊 Statistics</h3>
+                <h3>📊 Estadísticas</h3>
                 <div class="stats-grid">
                     <div class="stat-item">
                         <span class="stat-number" id="total-shops">0</span>
-                        <span class="stat-label">Total Shops</span>
+                        <span class="stat-label">Total Negocios</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number" id="visible-shops">0</span>
-                        <span class="stat-label">Visible</span>
+                        <span class="stat-label">Mostrados en el mapa</span>
                     </div>
                 </div>
             </div>
+            
+            <div class="endpoint-input">
+                <button class="load-btn" id="load-data-btn">Actualizar Datos de Negocios</button>
+            </div>
 
             <div class="category-filter">
-                <h2>🏷️ Filter by Category</h2>
+                <h2>🏷️ Filtrar por Estado</h2>
                 <div class="filter-group" id="category-filters">
                     <!-- Categories will be populated dynamically -->
                 </div>
@@ -452,7 +450,7 @@
         <div class="map-container">
             <div class="loading" id="loading">
                 <div class="loading-spinner"></div>
-                <p>Loading map...</p>
+                <p>Cargando mapa...</p>
             </div>
             <div id="map"></div>
         </div>
@@ -460,8 +458,11 @@
     <!-- End Main Content -->
 
     <script>
+        // Fixed Data Endpoint URL - Change this to your actual endpoint
+        const DATA_ENDPOINT_URL = "https://technoka.app.n8n.cloud/webhook/shop-data"; // Replace with your actual endpoint URL
+        
         // Password Configuration
-        const CORRECT_PASSWORD = "MallorcaShops2025"; // Change this to your desired password
+        const CORRECT_PASSWORD = "test"; // Change this to your desired password
         
         // Password Protection Logic
         function initPasswordProtection() {
@@ -527,63 +528,68 @@
         let categories = new Map();
         let activeCategories = new Set();
 
-        // Category icons and colors
+        // Category icons and colors - Updated for Spanish categories
         const categoryConfig = {
-            'not_contacted': { icon: '🔴', color: '#ff4757', name: 'Not Contacted' },
-            'contacted': { icon: '🟡', color: '#ffa502', name: 'Contacted' },
-            'responded': { icon: '🟢', color: '#2ed573', name: 'Responded' },
-            'meeting_scheduled': { icon: '🔵', color: '#3742fa', name: 'Meeting Scheduled' },
-            'closed_deal': { icon: '⭐', color: '#7bed9f', name: 'Deal Closed' },
-            'rejected': { icon: '❌', color: '#ff6b6b', name: 'Rejected' },
-            'default': { icon: '📍', color: '#57606f', name: 'Unknown' }
+            'Sin Enviar': { icon: '🔴', color: '#ff4757', name: 'Sin Enviar' },
+            'Enviado': { icon: '🟡', color: '#ffa502', name: 'Enviado' },
+            'Respondido': { icon: '🟢', color: '#2ed573', name: 'Respondido' },
+            'Vendido': { icon: '⭐', color: '#7bed9f', name: 'Vendido' },
+            'default': { icon: '📍', color: '#57606f', name: 'Desconocido' }
         };
 
-        // Sample data for demonstration (remove when using real endpoint)
+        // Sample data for demonstration - Updated structure and Spanish data
         const sampleData = [
             {
-                name: "Sa Pobla Market",
-                address: "Plaça Major, 07420 Sa Pobla, Mallorca",
-                latitude: 39.7681,
-                longitude: 2.9975,
-                telephone: "+34 971 540 001",
-                email: "info@sapoblamarket.com",
-                category: "responded"
+                "row_number": 1,
+                "Name": "Mercado de Sa Pobla",
+                "Address": "Plaça Major, 07420 Sa Pobla, Illes Balears, España",
+                "Latitude": 39.7681,
+                "Longitude": 2.9975,
+                "Rating": 4.5,
+                "Place_ID": "ChIJ123456789",
+                "Phone": "971 540 001",
+                "Website": "http://www.sapoblamarket.com",
+                "Email": "info@sapoblamarket.com",
+                "Estado": "Respondido"
             },
             {
-                name: "Palma Fashion Store",
-                address: "Carrer de la Unió, 07001 Palma, Mallorca",
-                latitude: 39.5696,
-                longitude: 2.6502,
-                telephone: "+34 971 710 123",
-                email: "contact@palmafashion.es",
-                category: "contacted"
+                "row_number": 2,
+                "Name": "Tienda de Moda Palma",
+                "Address": "Carrer de la Unió, 07001 Palma, Illes Balears, España",
+                "Latitude": 39.5696,
+                "Longitude": 2.6502,
+                "Rating": 4.2,
+                "Place_ID": "ChIJ987654321",
+                "Phone": "971 710 123",
+                "Website": "http://www.palmafashion.es",
+                "Email": "contacto@palmafashion.es",
+                "Estado": "Enviado"
             },
             {
-                name: "Alcúdia Souvenir Shop",
-                address: "Carrer Major, 07400 Alcúdia, Mallorca",
-                latitude: 39.8544,
-                longitude: 3.1216,
-                telephone: "+34 971 890 456",
-                email: "souvenirs@alcudia.com",
-                category: "not_contacted"
+                "row_number": 3,
+                "Name": "Souvenirs de Alcúdia",
+                "Address": "Carrer Major, 07400 Alcúdia, Illes Balears, España",
+                "Latitude": 39.8544,
+                "Longitude": 3.1216,
+                "Rating": 4.0,
+                "Place_ID": "ChIJ456789123",
+                "Phone": "971 890 456",
+                "Website": "",
+                "Email": "souvenirs@alcudia.com",
+                "Estado": "Sin Enviar"
             },
             {
-                name: "Manacor Leather Goods",
-                address: "Avinguda des Torrent, 07500 Manacor, Mallorca",
-                latitude: 39.5696,
-                longitude: 3.2096,
-                telephone: "+34 971 550 789",
-                email: "leather@manacor.es",
-                category: "closed_deal"
-            },
-            {
-                name: "Valldemossa Art Gallery",
-                address: "Carrer Rosa, 07170 Valldemossa, Mallorca",
-                latitude: 39.7103,
-                longitude: 2.6222,
-                telephone: "+34 971 612 345",
-                email: "art@valldemossa.com",
-                category: "meeting_scheduled"
+                "row_number": 4,
+                "Name": "Artículos de Cuero Manacor",
+                "Address": "Avinguda des Torrent, 07500 Manacor, Illes Balears, España",
+                "Latitude": 39.5696,
+                "Longitude": 3.2096,
+                "Rating": 4.8,
+                "Place_ID": "ChIJ789123456",
+                "Phone": "971 550 789",
+                "Website": "http://www.cuermanacor.es",
+                "Email": "cuero@manacor.es",
+                "Estado": "Vendido"
             }
         ];
 
@@ -650,8 +656,12 @@
                         loadingElement.style.display = 'none';
                     }
                     
-                    // Load sample data initially
-                    loadShopData(sampleData);
+                    // Load sample data initially (or auto-load real data if endpoint is configured)
+                    if (DATA_ENDPOINT_URL === "https://technoka.app.n8n.cloud/webhook/shop-data") {
+                        loadShopData(sampleData);
+                    } else {
+                        autoLoadData();
+                    }
 
                 } catch (error) {
                     console.error('Error initializing map:', error);
@@ -668,9 +678,9 @@
             clearMarkers();
             categories.clear();
             
-            // Process categories
+            // Process categories using the Estado field
             data.forEach(shop => {
-                const category = shop.category || 'default';
+                const category = shop.Estado || 'default';
                 if (!categories.has(category)) {
                     categories.set(category, []);
                 }
@@ -745,16 +755,16 @@
             clearMarkers();
             
             shopData.forEach(shop => {
-                const category = shop.category || 'default';
+                const category = shop.Estado || 'default';
                 
                 if (!activeCategories.has(category)) return;
                 
                 const config = categoryConfig[category] || categoryConfig.default;
                 
                 const marker = new google.maps.Marker({
-                    position: { lat: parseFloat(shop.latitude), lng: parseFloat(shop.longitude) },
+                    position: { lat: parseFloat(shop.Latitude), lng: parseFloat(shop.Longitude) },
                     map: map,
-                    title: shop.name,
+                    title: shop.Name,
                     icon: {
                         url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
                             <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
@@ -769,12 +779,14 @@
                 const infoWindow = new google.maps.InfoWindow({
                     content: `
                         <div style="max-width: 300px; padding: 10px;">
-                            <h3 style="margin: 0 0 10px 0; color: #333;">${shop.name}</h3>
-                            <p style="margin: 5px 0; color: #666;"><strong>📍 Address:</strong> ${shop.address}</p>
-                            <p style="margin: 5px 0; color: #666;"><strong>📞 Phone:</strong> ${shop.telephone || 'N/A'}</p>
-                            <p style="margin: 5px 0; color: #666;"><strong>📧 Email:</strong> ${shop.email || 'N/A'}</p>
+                            <h3 style="margin: 0 0 10px 0; color: #333;">${shop.Name}</h3>
+                            <p style="margin: 5px 0; color: #666;"><strong>📍 Dirección:</strong> ${shop.Address}</p>
+                            <p style="margin: 5px 0; color: #666;"><strong>📞 Teléfono:</strong> ${shop.Phone || 'N/A'}</p>
+                            <p style="margin: 5px 0; color: #666;"><strong>📧 Email:</strong> ${shop.Email || 'N/A'}</p>
+                            ${shop.Website ? `<p style="margin: 5px 0; color: #666;"><strong>🌐 Web:</strong> <a href="${shop.Website}" target="_blank" style="color: #667eea;">${shop.Website}</a></p>` : ''}
+                            ${shop.Rating ? `<p style="margin: 5px 0; color: #666;"><strong>⭐ Valoración:</strong> ${shop.Rating}/5</p>` : ''}
                             <p style="margin: 5px 0; color: ${config.color}; font-weight: bold;">
-                                <strong>Status:</strong> ${config.icon} ${config.name}
+                                <strong>Estado:</strong> ${config.icon} ${config.name}
                             </p>
                         </div>
                     `
@@ -796,30 +808,34 @@
             document.getElementById('visible-shops').textContent = visibleShops;
         }
 
-        // Load data from endpoint
+        // Load data from fixed endpoint
         async function loadDataFromEndpoint() {
-            const endpointUrl = document.getElementById('endpoint-url').value;
             const loadBtn = document.getElementById('load-data-btn');
             
-            if (!endpointUrl) {
-                alert('Please enter an endpoint URL');
-                return;
-            }
-
             loadBtn.disabled = true;
-            loadBtn.textContent = 'Loading...';
+            loadBtn.textContent = 'Cargando...';
 
             try {
-                const response = await fetch(endpointUrl);
+                const response = await fetch(DATA_ENDPOINT_URL);
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`Error HTTP! estado: ${response.status}`);
                 }
                 
                 const data = await response.json();
                 
                 // Validate data structure
                 if (!Array.isArray(data)) {
-                    throw new Error('Data should be an array of shop objects');
+                    throw new Error('Los datos deben ser un array de objetos de negocio');
+                }
+                
+                // Validate required fields
+                const requiredFields = ['Name', 'Address', 'Latitude', 'Longitude', 'Estado'];
+                const invalidItems = data.filter(item => 
+                    !requiredFields.every(field => item.hasOwnProperty(field))
+                );
+                
+                if (invalidItems.length > 0) {
+                    console.warn('Algunos elementos no tienen todos los campos requeridos:', invalidItems);
                 }
                 
                 loadShopData(data);
@@ -827,35 +843,37 @@
                 // Show success message
                 const successMsg = document.createElement('div');
                 successMsg.style.cssText = 'background: #2ed573; color: white; padding: 1rem; border-radius: 8px; margin: 1rem 0; text-align: center;';
-                successMsg.textContent = `Successfully loaded ${data.length} shops`;
+                successMsg.textContent = `${data.length} negocios cargados.`;
                 document.querySelector('.sidebar').insertBefore(successMsg, document.querySelector('.stats'));
                 
                 setTimeout(() => successMsg.remove(), 3000);
                 
             } catch (error) {
-                console.error('Error loading data:', error);
+                console.error('Error cargando datos:', error);
                 
                 const errorMsg = document.createElement('div');
                 errorMsg.className = 'error-message';
-                errorMsg.textContent = `Error loading data: ${error.message}`;
+                errorMsg.textContent = `Error cargando datos: ${error.message}`;
                 document.querySelector('.sidebar').insertBefore(errorMsg, document.querySelector('.stats'));
                 
                 setTimeout(() => errorMsg.remove(), 5000);
             } finally {
                 loadBtn.disabled = false;
-                loadBtn.textContent = 'Load Shop Data';
+                loadBtn.textContent = 'Actualizar Datos de Negocios';
             }
         }
 
         // Event listeners
         document.getElementById('load-data-btn').addEventListener('click', loadDataFromEndpoint);
 
-        // Allow Enter key to trigger load
-        document.getElementById('endpoint-url').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                loadDataFromEndpoint();
+        // Auto-load data when map is ready
+        function autoLoadData() {
+            if (map && DATA_ENDPOINT_URL !== "https://technoka.app.n8n.cloud/webhook/shop-data") {
+                setTimeout(() => {
+                    loadDataFromEndpoint();
+                }, 1000);
             }
-        });
+        }
 
         // Initialize map when Google Maps API loads (now controlled by password protection)
         window.initMap = initMap;
@@ -910,10 +928,10 @@
                 if (loadingElement && loadingElement.style.display !== 'none') {
                     loadingElement.innerHTML = `
                         <p style="color: #ff6b6b; text-align: center;">
-                            Map failed to load. Please check your internet connection and refresh the page.
+                            El mapa no se pudo cargar. Verifica tu conexión a internet y actualiza la página.
                             <br><br>
                             <button onclick="location.reload()" style="background: #667eea; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">
-                                Retry
+                                Reintentar
                             </button>
                         </p>
                     `;
