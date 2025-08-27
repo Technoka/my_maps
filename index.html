@@ -13,7 +13,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #C10001 0%, #8B0000 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -54,12 +54,12 @@
 
         .password-input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #C10001;
+            box-shadow: 0 0 0 3px rgba(193, 0, 1, 0.1);
         }
 
         .password-submit {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #C10001, #8B0000);
             color: white;
             border: none;
             padding: 1rem 2rem;
@@ -74,7 +74,7 @@
 
         .password-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 25px rgba(193, 0, 1, 0.3);
         }
 
         .password-submit:disabled {
@@ -98,7 +98,7 @@
         .lock-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
-            color: #667eea;
+            color: #C10001;
         }
 
         .main-content {
@@ -117,7 +117,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #C10001 0%, #8B0000 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -197,15 +197,15 @@
         }
 
         .filter-item.active {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
+            border-color: #C10001;
+            background: rgba(193, 0, 1, 0.1);
         }
 
         .filter-checkbox {
             margin-right: 1rem;
             width: 20px;
             height: 20px;
-            accent-color: #667eea;
+            accent-color: #C10001;
         }
 
         .filter-label {
@@ -215,7 +215,7 @@
         }
 
         .filter-count {
-            background: #667eea;
+            background: #C10001;
             color: white;
             border-radius: 20px;
             padding: 0.3rem 0.8rem;
@@ -224,7 +224,7 @@
         }
 
         .stats {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #C10001, #8B0000);
             border-radius: 12px;
             padding: 1.5rem;
             color: white;
@@ -336,7 +336,7 @@
         }
 
         .load-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #C10001, #8B0000);
             color: white;
             border: none;
             padding: 0.75rem 1.5rem;
@@ -403,9 +403,12 @@
     <!-- Password Protection Overlay -->
     <div class="password-overlay" id="password-overlay">
         <div class="password-container">
-            <div class="lock-icon">🔒</div>
-            <h2>Acceso Requerido</h2>
-            <p style="color: #666; margin-bottom: 2rem;">Introduce la contraseña para ver el mapa</p>
+            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 1rem;">
+                <img src="logo_texto.png" alt="El Dimoni Logo" style="height: 40px; width: auto;" onerror="this.style.display='none'">
+            </div>
+            
+            <h2 style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">🔒 Acceso Requerido</h2>
+            <p style="color: #666; margin-bottom: 2rem;">Introduce la contraseña para ver el Mapa de Negocios</p>
             <input type="password" class="password-input" id="password-input" placeholder="Introducir contraseña" />
             <button class="password-submit" id="password-submit">Acceder al Mapa</button>
             <div class="password-error" id="password-error">Contraseña incorrecta. Inténtalo de nuevo.</div>
@@ -415,26 +418,30 @@
     <!-- Main Content (Hidden until authenticated) -->
     <div class="main-content" id="main-content">
     <div class="header">
-        <h1>🏪 Negocios de Mallorca</h1>
-        <p>Mapa interactivo con datos y estados de los negocios</p>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 0.5rem;">
+            <img src="logo_texto.png" alt="El Dimoni Logo" style="height: 40px; width: auto;" onerror="this.style.display='none'">
+            <h1 style="margin: 0;"> Mapa de Negocios de Mallorca</h1>
+        </div>
+        <p style="text-align: center; margin: 0;">Mapa interactivo de <strong>El Dimoni</strong> - Estado de contacto con negocios</p>
     </div>
 
     <div class="container">
         <div class="sidebar">
+
             <div class="stats">
                 <h3>📊 Estadísticas</h3>
                 <div class="stats-grid">
                     <div class="stat-item">
                         <span class="stat-number" id="total-shops">0</span>
-                        <span class="stat-label">Negocios en total</span>
+                        <span class="stat-label">Total Negocios</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number" id="visible-shops">0</span>
-                        <span class="stat-label">Mostrados en el mapa</span>
+                        <span class="stat-label">Visibles</span>
                     </div>
                 </div>
             </div>
-            
+
             <div class="endpoint-input">
                 <button class="load-btn" id="load-data-btn">Actualizar Datos de Negocios</button>
             </div>
@@ -455,6 +462,7 @@
             <div id="map"></div>
         </div>
     </div>
+    
     <!-- End Main Content -->
 
     <script>
@@ -528,12 +536,13 @@
         let categories = new Map();
         let activeCategories = new Set();
 
-        // Category icons and colors - Updated for Spanish categories
+        // Category icons and colors - Updated for El Dimoni categories
         const categoryConfig = {
-            'Sin Enviar': { icon: '🔴', color: '#ff4757', name: 'Sin Enviar' },
-            'Enviado': { icon: '🟡', color: '#ffa502', name: 'Enviado' },
             'Respondido': { icon: '🟢', color: '#2ed573', name: 'Respondido' },
-            'Vendido': { icon: '⭐', color: '#7bed9f', name: 'Vendido' },
+            'Enviado': { icon: '🟡', color: '#ffa502', name: 'Enviado' },
+            'Sin Enviar': { icon: '🔴', color: '#ff4757', name: 'Sin Enviar' },
+            'Vendido': { icon: 'logo.png', color: '#C10001', name: 'Vendido', isImage: true },
+            'Blacklist': { icon: '⚫', color: '#2f3542', name: 'Blacklist' },
             'default': { icon: '📍', color: '#57606f', name: 'Desconocido' }
         };
 
@@ -590,6 +599,19 @@
                 "Website": "http://www.cuermanacor.es",
                 "Email": "cuero@manacor.es",
                 "Estado": "Vendido"
+            },
+            {
+                "row_number": 5,
+                "Name": "Bar Restaurante Can Pep",
+                "Address": "Carrer del Mar, 07610 Palma, Illes Balears, España",
+                "Latitude": 39.5500,
+                "Longitude": 2.6200,
+                "Rating": 3.2,
+                "Place_ID": "ChIJ111222333",
+                "Phone": "971 333 444",
+                "Website": "",
+                "Email": "canpep@email.com",
+                "Estado": "Blacklist"
             }
         ];
 
@@ -701,13 +723,20 @@
 
             categories.forEach((shops, category) => {
                 const config = categoryConfig[category] || categoryConfig.default;
+                let markerIcon;
+
+                if (config.isImage) {
+                    markerIcon = `<img src="${config.icon}" alt="${config.name}" style="width:20px; height:20px;">`;
+                } else {
+                    markerIcon = config.icon;
+                }
                 
                 const filterItem = document.createElement('div');
                 filterItem.className = `filter-item ${activeCategories.has(category) ? 'active' : ''}`;
                 filterItem.innerHTML = `
                     <input type="checkbox" class="filter-checkbox" ${activeCategories.has(category) ? 'checked' : ''} 
                            data-category="${category}">
-                    <span class="filter-label">${config.icon} ${config.name}</span>
+                    <span class="filter-label">${markerIcon} ${config.name}</span>
                     <span class="filter-count">${shops.length}</span>
                 `;
                 
@@ -761,11 +790,17 @@
                 
                 const config = categoryConfig[category] || categoryConfig.default;
                 
-                const marker = new google.maps.Marker({
-                    position: { lat: parseFloat(shop.Latitude), lng: parseFloat(shop.Longitude) },
-                    map: map,
-                    title: shop.Name,
-                    icon: {
+                let markerIcon;
+                
+                // Handle company logo for "Vendido" category
+                if (config.isImage) {
+                    markerIcon = {
+                        url: config.icon,
+                        scaledSize: new google.maps.Size(32, 32),
+                        anchor: new google.maps.Point(16, 16)
+                    };
+                } else {
+                    markerIcon = {
                         url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
                             <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="16" cy="16" r="14" fill="${config.color}" stroke="white" stroke-width="2"/>
@@ -773,20 +808,30 @@
                             </svg>
                         `)}`,
                         scaledSize: new google.maps.Size(32, 32)
-                    }
+                    };
+                }
+                
+                const marker = new google.maps.Marker({
+                    position: { lat: parseFloat(shop.Latitude), lng: parseFloat(shop.Longitude) },
+                    map: map,
+                    title: shop.Name,
+                    icon: markerIcon
                 });
 
                 const infoWindow = new google.maps.InfoWindow({
                     content: `
                         <div style="max-width: 300px; padding: 10px;">
-                            <h3 style="margin: 0 0 10px 0; color: #333;">${shop.Name}</h3>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                <img src="logo.png" alt="El Dimoni" style="height: 30px; width: auto;" onerror="this.style.display='none'">
+                                <h3 style="margin: 0; color: #333;">${shop.Name}</h3>
+                            </div>
                             <p style="margin: 5px 0; color: #666;"><strong>📍 Dirección:</strong> ${shop.Address}</p>
                             <p style="margin: 5px 0; color: #666;"><strong>📞 Teléfono:</strong> ${shop.Phone || 'N/A'}</p>
                             <p style="margin: 5px 0; color: #666;"><strong>📧 Email:</strong> ${shop.Email || 'N/A'}</p>
-                            ${shop.Website ? `<p style="margin: 5px 0; color: #666;"><strong>🌐 Web:</strong> <a href="${shop.Website}" target="_blank" style="color: #667eea;">${shop.Website}</a></p>` : ''}
+                            ${shop.Website ? `<p style="margin: 5px 0; color: #666;"><strong>🌐 Web:</strong> <a href="${shop.Website}" target="_blank" style="color: #C10001;">${shop.Website}</a></p>` : ''}
                             ${shop.Rating ? `<p style="margin: 5px 0; color: #666;"><strong>⭐ Valoración:</strong> ${shop.Rating}/5</p>` : ''}
                             <p style="margin: 5px 0; color: ${config.color}; font-weight: bold;">
-                                <strong>Estado:</strong> ${config.icon} ${config.name}
+                                <strong>Estado:</strong> ${config.isImage ? `<img src="${config.icon}" style="height: 16px; width: 16px; vertical-align: middle; margin-right: 5px;" onerror="this.style.display='none'">` : config.icon} ${config.name}
                             </p>
                         </div>
                     `
@@ -843,7 +888,7 @@
                 // Show success message
                 const successMsg = document.createElement('div');
                 successMsg.style.cssText = 'background: #2ed573; color: white; padding: 1rem; border-radius: 8px; margin: 1rem 0; text-align: center;';
-                successMsg.textContent = `${data.length} negocios cargados.`;
+                successMsg.textContent = `Se cargaron exitosamente ${data.length} negocios`;
                 document.querySelector('.sidebar').insertBefore(successMsg, document.querySelector('.stats'));
                 
                 setTimeout(() => successMsg.remove(), 3000);
@@ -930,7 +975,7 @@
                         <p style="color: #ff6b6b; text-align: center;">
                             El mapa no se pudo cargar. Verifica tu conexión a internet y actualiza la página.
                             <br><br>
-                            <button onclick="location.reload()" style="background: #667eea; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">
+                            <button onclick="location.reload()" style="background: #C10001; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">
                                 Reintentar
                             </button>
                         </p>
