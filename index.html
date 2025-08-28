@@ -419,10 +419,10 @@
     <div class="main-content" id="main-content">
     <div class="header">
         <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 0.5rem;">
-            <img src="logo_texto.png" alt="El Dimoni Logo" style="height: 40px; width: auto;" onerror="this.style.display='none'">
+            <img src="logo_blanco.jpg" alt="El Dimoni Logo" style="height: 60px; width: auto;" onerror="this.style.display='none'">
             <!-- <h1 style="margin: 0;"> Mapa de Negocios de Mallorca</h1> -->
         </div>
-        <p style="text-align: center; margin: 0;">Mapa interactivo de <strong>El Dimoni</strong> - Estado de contacto con negocios</p>
+        <p style="text-align: center; margin: 0;">Mapa interactivo - Estado de contacto con negocios</p>
     </div>
 
     <div class="container">
@@ -433,11 +433,11 @@
                 <div class="stats-grid">
                     <div class="stat-item">
                         <span class="stat-number" id="total-shops">0</span>
-                        <span class="stat-label">Total Negocios</span>
+                        <span class="stat-label">Negocios en total</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number" id="visible-shops">0</span>
-                        <span class="stat-label">Visibles</span>
+                        <span class="stat-label">Mostrados en el mapa</span>
                     </div>
                 </div>
             </div>
@@ -495,6 +495,8 @@
                     if (typeof google !== 'undefined' && google.maps) {
                         initMap();
                     }
+                    loadDataFromEndpoint(); // load data automaticall on load
+
                 } else {
                     passwordError.classList.add('show');
                     passwordInput.value = '';
@@ -545,75 +547,6 @@
             'Blacklist': { icon: '⚫', color: '#2f3542', name: 'Blacklist' },
             'default': { icon: '📍', color: '#57606f', name: 'Desconocido' }
         };
-
-        // Sample data for demonstration - Updated structure and Spanish data
-        const sampleData = [
-            {
-                "row_number": 1,
-                "Name": "Mercado de Sa Pobla",
-                "Address": "Plaça Major, 07420 Sa Pobla, Illes Balears, España",
-                "Latitude": 39.7681,
-                "Longitude": 2.9975,
-                "Rating": 4.5,
-                "Place_ID": "ChIJ123456789",
-                "Phone": "971 540 001",
-                "Website": "http://www.sapoblamarket.com",
-                "Email": "info@sapoblamarket.com",
-                "Estado": "Respondido"
-            },
-            {
-                "row_number": 2,
-                "Name": "Tienda de Moda Palma",
-                "Address": "Carrer de la Unió, 07001 Palma, Illes Balears, España",
-                "Latitude": 39.5696,
-                "Longitude": 2.6502,
-                "Rating": 4.2,
-                "Place_ID": "ChIJ987654321",
-                "Phone": "971 710 123",
-                "Website": "http://www.palmafashion.es",
-                "Email": "contacto@palmafashion.es",
-                "Estado": "Enviado"
-            },
-            {
-                "row_number": 3,
-                "Name": "Souvenirs de Alcúdia",
-                "Address": "Carrer Major, 07400 Alcúdia, Illes Balears, España",
-                "Latitude": 39.8544,
-                "Longitude": 3.1216,
-                "Rating": 4.0,
-                "Place_ID": "ChIJ456789123",
-                "Phone": "971 890 456",
-                "Website": "",
-                "Email": "souvenirs@alcudia.com",
-                "Estado": "Sin Enviar"
-            },
-            {
-                "row_number": 4,
-                "Name": "Artículos de Cuero Manacor",
-                "Address": "Avinguda des Torrent, 07500 Manacor, Illes Balears, España",
-                "Latitude": 39.5696,
-                "Longitude": 3.2096,
-                "Rating": 4.8,
-                "Place_ID": "ChIJ789123456",
-                "Phone": "971 550 789",
-                "Website": "http://www.cuermanacor.es",
-                "Email": "cuero@manacor.es",
-                "Estado": "Vendido"
-            },
-            {
-                "row_number": 5,
-                "Name": "Bar Restaurante Can Pep",
-                "Address": "Carrer del Mar, 07610 Palma, Illes Balears, España",
-                "Latitude": 39.5500,
-                "Longitude": 2.6200,
-                "Rating": 3.2,
-                "Place_ID": "ChIJ111222333",
-                "Phone": "971 333 444",
-                "Website": "",
-                "Email": "canpep@email.com",
-                "Estado": "Blacklist"
-            }
-        ];
 
         function initMap() {
             // Center map on Mallorca
@@ -676,13 +609,6 @@
                     const loadingElement = document.getElementById('loading');
                     if (loadingElement) {
                         loadingElement.style.display = 'none';
-                    }
-                    
-                    // Load sample data initially (or auto-load real data if endpoint is configured)
-                    if (DATA_ENDPOINT_URL === "https://technoka.app.n8n.cloud/webhook/shop-data") {
-                        loadShopData(sampleData);
-                    } else {
-                        autoLoadData();
                     }
 
                 } catch (error) {
@@ -858,7 +784,9 @@
             const loadBtn = document.getElementById('load-data-btn');
             
             loadBtn.disabled = true;
-            loadBtn.textContent = 'Cargando...';
+            loadBtn.textContent = 'Cargando datos...';
+
+            console.log("load data from endpoint...")
 
             try {
                 const response = await fetch(DATA_ENDPOINT_URL);
